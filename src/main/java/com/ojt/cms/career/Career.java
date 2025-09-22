@@ -1,4 +1,4 @@
-package com.ojt.cms.education;
+package com.ojt.cms.career;
 
 import java.time.LocalDate;
 
@@ -7,8 +7,6 @@ import com.ojt.cms.user.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,33 +23,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Education extends BaseEntity {
+public class Career extends BaseEntity {
 	@Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long eduId;
-
-    @Column(nullable = false)
-    private Boolean exam; //검정고시인지 아닌지
-
-    @Column(nullable = false, length = 100)
-    private String schoolName;
+    private Long careerId;
     
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 50)
-    private EducationType level;
-
     @Column(nullable = false, length = 100)
-    private String major;
-
+    private String companyName;
+    
+    @Column(nullable = false, length = 100)
+    private String rank; //직급
+    
     @Column(nullable = false)
-    private LocalDate entDate;
-
-    @Column(nullable = false)
-    private LocalDate graduDate;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 50)
-    private EducationStatus eduStatus;
+    private LocalDate startDate;
+    
+    @Column(nullable = true)
+    private LocalDate endDate;
     
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="userId")

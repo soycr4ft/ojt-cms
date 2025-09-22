@@ -1,9 +1,14 @@
 package com.ojt.cms.military;
 
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+
 import com.ojt.cms.user.User;
 
+@Component
 public class MilitaryMapper {
-	public static Military toEntity(MilitaryDTO dto) {
+	public Military toEntity(MilitaryDTO dto) {
 		return Military.builder()
 				.militaryId(dto.getMilitaryId())
 				.militaryInfo(dto.getMilitaryInfo())
@@ -16,7 +21,7 @@ public class MilitaryMapper {
 				.build();
 	}
 	
-	public static MilitaryDTO toDTO(Military entity) {
+	public MilitaryDTO toDTO(Military entity) {
 		return MilitaryDTO.builder()
 				.militaryId(entity.getMilitaryId())
 				.militaryInfo(entity.getMilitaryInfo())
@@ -27,5 +32,11 @@ public class MilitaryMapper {
 				.endMil(entity.getEndMil())
 				.userId(entity.getUser()!= null? entity.getUser().getUserId():null)
 				.build();
+	}
+	
+	public List<MilitaryDTO> toDTOList(List<Military> dtoList) {
+	    return dtoList.stream()
+	            .map(this::toDTO)
+	            .toList();
 	}
 }

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: "Noto Sans KR", sans-serif;
+        }
+
+        /* 상단 메인 이미지 */
+        .main-image {
+            width: 100%;
+            height: 250px;
+            background: url('/images/main.jpg') no-repeat center center;
+            background-size: cover;
+        }
+
+        /* 전체 레이아웃 */
+        .container {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            padding: 40px;
+        }
+
+        /* 공지사항 테이블 */
+        .notice {
+            width: 50%;
+        }
+
+        .notice h2 {
+            margin-bottom: 15px;
+        }
+
+        .notice table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .notice table, .notice th, .notice td {
+            border: 1px solid #ddd;
+        }
+
+        .notice th, .notice td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        /* 로그인 폼 */
+        .login-box {
+            width: 300px;
+            border: 1px solid #eee;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .login-box h2 {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 10px;
+            margin: 6px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .login-box button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .btn-login {
+            background-color: #007bff;
+        }
+
+        .btn-join {
+            background-color: #6c757d;
+        }
+
+        .login-box a {
+            display: block;
+            margin: 5px 0;
+            font-size: 13px;
+            color: #007bff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<!-- 상단 메인 사진 -->
+<div class="main-image"></div>
+
+<!-- 본문 -->
+<div class="container">
+
+    <!-- 공지사항 -->
+    <div class="notice">
+        <h2>메인페이지</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>No</th>
+                <th>제목</th>
+                <th>작성자</th>
+                <th>작성일</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- 타임리프 반복문 -->
+            <tr th:each="notice, stat : ${noticeList}">
+                <td th:text="${notice.no}"></td>
+                <td>
+                    <a th:href="@{/notice/{id}(id=${notice.no})}" th:text="${notice.title}"></a>
+                </td>
+                <td th:text="${notice.writer}"></td>
+                <td th:text="${#temporals.format(notice.regDate, 'yyyy.MM.dd')}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 로그인 박스 -->
+    <div class="login-box">
+        <h2>로그인</h2>
+        <form th:action="@{/login}" method="post">
+            <input type="text" name="username" placeholder="아이디를 입력하세요" required>
+            <input type="password" name="password" placeholder="비밀번호를 입력하세요" required>
+            <a th:href="@{/findAccount}">아이디 비밀번호 찾기</a>
+            <button type="submit" class="btn-login">로그인</button>
+            <button type="button" class="btn-join" th:onclick="|location.href='@{/signup}'|">회원가입</button>
+        </form>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,10 +1,7 @@
-package com.ojt.cms.user;
+package com.ojt.cms.user.dto;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
-import com.ojt.cms.user.enums.ApprovedStatus;
-import com.ojt.cms.user.enums.AuthRole;
 import com.ojt.cms.user.enums.Gender;
 
 import lombok.AllArgsConstructor;
@@ -20,20 +17,17 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-public class UserDTO {
-    private Long userId;
+public class UserJoinDTO {
     private String loginId;
     private String password;
     private String name;
     private Gender gender;
     private LocalDate birthday;
-    private String phone;
+    private String phone1;
+    private String phone2;
+    private String phone3;
     private String email;
-    private ApprovedStatus approved; //대기 승인 거절
-    private LocalDateTime logInfo; //최근 접속 일시
-    private String ipInfo; //최근 접속 ip
+    private String emailDomain;
     private Long deptId; //대기 승인 거절
-    private AuthRole auth; //권한 memeber, admin, master, suspend
-    private Boolean deleted; //0활성 1탈퇴
 
 }

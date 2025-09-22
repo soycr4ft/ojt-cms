@@ -20,15 +20,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder //부모필드 Builder에서 제외하기
 public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -53,7 +53,7 @@ public class User extends BaseEntity {
     @Column(nullable = false, length = 50)
     private String phone;
 
-    @Column(nullable = false, length = 50, unique = true)
+    @Column(nullable = false, length = 50)
     private String email;
     
     @Enumerated(EnumType.STRING)
@@ -77,4 +77,9 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private Boolean deleted; //0활성 1탈퇴
     
+    //ip와 로그인 시간 세팅
+    public void setIPandLoinDate(String ipAddress ) {
+    	this.ipInfo=ipAddress;
+    	this.logInfo=LocalDateTime.now();
+    }
 }

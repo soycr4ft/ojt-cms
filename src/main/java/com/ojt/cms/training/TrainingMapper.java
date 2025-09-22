@@ -1,9 +1,14 @@
 package com.ojt.cms.training;
 
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+
 import com.ojt.cms.user.User;
 
+@Component
 public class TrainingMapper {
-	public static Training toEntity(TrainingDTO dto) {
+	public Training toEntity(TrainingDTO dto) {
 		return Training.builder()
 				.trainId(dto.getTrainId())
 				.course(dto.getCourse())
@@ -15,7 +20,7 @@ public class TrainingMapper {
 				.build();
 	}
 	
-	public static TrainingDTO toDTO(Training entity) {
+	public TrainingDTO toDTO(Training entity) {
 		return TrainingDTO.builder()
 				.trainId(entity.getTrainId())
 				.course(entity.getCourse())
@@ -25,5 +30,11 @@ public class TrainingMapper {
 				.status(entity.getStatus())
 				.userId(entity.getUser()!= null? entity.getUser().getUserId():null)
 				.build();
+	}
+	
+	public List<TrainingDTO> toDTOList(List<Training> dtoList) {
+	    return dtoList.stream()
+	            .map(this::toDTO)
+	            .toList();
 	}
 }

@@ -1,7 +1,12 @@
 package com.ojt.cms.skillcode;
 
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+
+@Component
 public class SkillCodeMapper {
-	public static SkillCode toEntity(SkillCodeDTO dto) {
+	public SkillCode toEntity(SkillCodeDTO dto) {
 		return SkillCode.builder()
 				.skillCodeId(dto.getSkillCodeId())
 				.skillName(dto.getSkillName())
@@ -9,11 +14,17 @@ public class SkillCodeMapper {
 				.build();
 	}
 	
-	public static SkillCodeDTO toDTO(SkillCode entity) {
+	public SkillCodeDTO toDTO(SkillCode entity) {
 	    return SkillCodeDTO.builder()
 	            .skillCodeId(entity.getSkillCodeId())
 	            .skillName(entity.getSkillName())
 	            .keywords(entity.getKeywords())
 	            .build();
+	}
+	
+	public List<SkillCodeDTO> toDTOList(List<SkillCode> dtoList) {
+	    return dtoList.stream()
+	            .map(this::toDTO)
+	            .toList();
 	}
 }

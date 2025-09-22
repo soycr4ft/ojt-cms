@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입</title>
+    <style>
+        body {
+            font-family: "Noto Sans KR", sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+		select {
+            width: 50%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 4px;
+            background: #007bff;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+        }
+
+        .inline-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .small-input {
+            flex: 1;
+        }
+
+        .error-msg {
+            font-size: 13px;
+            color: red;
+            margin-top: 3px;
+        }
+
+        .success-msg {
+            font-size: 13px;
+            color: blue;
+            margin-top: 3px;
+        }
+    </style>
+	
+	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+
+</head>
+<body>
+
+<div class="container">
+    <h2>회원가입</h2>
+
+    <!-- 회원가입 폼 -->
+    <form th:action="@{/user/join}" th:object="${user}" method="post" onsubmit="return valid()">
+
+        <!-- 아이디 -->
+        <div class="form-group">
+            <label for="loginId">아이디 *</label>
+            <div class="inline-group">
+                <input type="text" id="loginId" th:field="*{loginId}" placeholder="아이디를 입력하세요" required>
+                <button type="button" class="btn" style="width:120px; background:#6c757d"
+                        id="checkIdAvailability">중복체크</button>
+            </div>
+            <!-- 메시지 영역 -->
+            <div th:if="${idError}" class="error-msg" th:text="${idError}"></div>
+            <div th:if="${idSuccess}" class="success-msg" th:text="${idSuccess}"></div>
+        </div>
+
+        <!-- 비밀번호 -->
+        <div class="form-group">
+            <label for="password">비밀번호 *</label>
+            <input type="password" id="password" th:field="*{password}" required>
+        </div>
+
+        <!-- 비밀번호 확인 -->
+        <div class="form-group">
+            <label for="passwordConfirm">비밀번호 확인 *</label>
+            <input type="password" id="passwordConfirm" required>
+            <div id="pwMsg" class="error-msg" style="display:none;">비밀번호가 일치하지 않습니다.</div>
+            <div id="pwMsgOk" class="success-msg" style="display:none;">비밀번호가 일치합니다.</div>
+        </div>
+
+        <!-- 부서 -->
+        <div class="form-group">
+            <label for="deptId">부서 *</label>
+            <select id="deptId" th:field="*{deptId}" required>
+				<option value="">부서를 선택하세요</option>
+	        	<option th:each="val : ${departments}" th:value="${val?.deptId}" th:utext="${val?.deptName}">        </option>
+            </select>
+        </div>
+
+        <!-- 이름 -->
+        <div class="form-group">
+            <label for="name">이름 *</label>
+            <input type="text" id="name" th:field="*{name}" required>
+        </div>
+
+        <!-- 성별 -->
+        <div class="form-group">
+            <label>성별 *</label>
+            <div class="inline-group">
+                <label><input type="radio" th:field="*{gender}" value="MALE" required> 남자</label>
+                <label><input type="radio" th:field="*{gender}" value="FEMALE"> 여자</label>
+            </div>
+        </div>
+
+        <!-- 생년월일 -->
+        <div class="form-group">
+            <label for="birthday">생년월일 *</label>
+            <input type="date" id="birthday" th:field="*{birthday}" required>
+        </div>
+
+        <!-- 휴대폰번호 -->
+        <div class="form-group">
+            <label>휴대폰번호 *</label>
+            <div class="inline-group">
+                <input type="text" maxlength="3" class="small-input" th:field="*{phone1}" placeholder="000" required>
+                <input type="text" maxlength="4" class="small-input" th:field="*{phone2}" placeholder="0000" required>
+                <input type="text" maxlength="4" class="small-input" th:field="*{phone3}" placeholder="0000" required>
+            </div>
+        </div>
+
+        <!-- 이메일 -->
+        <div class="form-group">
+            <label>이메일 *</label>
+            <div class="inline-group">
+                <input type="text" th:field="*{email}" placeholder="이메일 아이디" class="small-input" required>
+                <span>@</span>
+                <select th:field="*{emailDomain}" required>
+                    <option value="">이메일 선택</option>
+                    <option value="nadamcnc.com">nadamcnc.com</option>
+                    <option value="naver.com">naver.com</option>
+                    <option value="gmail.com">gmail.com</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- 가입하기 버튼 -->
+        <button type="submit" class="btn">가입하기</button>
+    </form>
+</div>
+
+<script>
+	//아이디 중복체크 또는 비밀번호 불일치 시 폼 제출 막기
+	let idAvailable = false;
+	let pwMatched  = false;
+	$(function() {
+		// 아이디 입력 시 중복체크 상태 초기화
+		$('#loginId').on('input', function() {
+		    idAvailable = false;
+		});
+		
+		$('#checkIdAvailability').click(function(e) {
+			e.preventDefault();
+			if ($('#loginId').val()==='') 
+			{
+				alert("아이디를 입력하세요");
+				return;
+			} 
+			$.ajax({
+				url:'/user/doubleIdCheck',
+				type:'post',
+				async:true,
+				dataType:'text',
+				data:{id:$('#loginId').val()},
+				success:function(result) {
+					if(result=='true') {
+						alert("중복된 아이디입니다.");
+						idAvailable=false;
+					} else {
+						alert("사용 가능한 아이디입니다");
+						idAvailable=true;
+					}
+				},
+				error:function(result) {
+					alert("아이디 중복 체크 오류");
+				}
+			})
+			
+		})
+	})
+	// 비밀번호 확인 체크
+	const pw = document.getElementById("password");
+	const pwConfirm = document.getElementById("passwordConfirm");
+	const pwMsg = document.getElementById("pwMsg");
+	const pwMsgOk = document.getElementById("pwMsgOk");
+
+	function checkPasswordMatch() {
+	    if (pw.value === "" || pwConfirm.value === "") {
+	        pwMsg.style.display = "none";
+	        pwMsgOk.style.display = "none";
+			pwMatched =false;
+	        return;
+	    }
+	    if (pw.value === pwConfirm.value) {
+	        pwMsg.style.display = "none";
+	        pwMsgOk.style.display = "block";
+			pwMatched =true;
+	    } else {
+	        pwMsg.style.display = "block";
+	        pwMsgOk.style.display = "none";
+			pwMatched =false;
+	    }
+	}
+
+	// 두 필드 모두 리스너 등록
+	pw.addEventListener("input", checkPasswordMatch);
+	pwConfirm.addEventListener("input", checkPasswordMatch);
+	
+	function valid() {
+		if (!idAvailable) {
+		    alert('아이디 중복확인을 해주세요.');
+		    return false;
+		}
+		if (!pwMatched) {
+		    alert('비밀번호가 일치하지 않습니다.');
+		    return false;
+		}
+		return true;
+	}
+
+</script>
+
+</body>
+</html>

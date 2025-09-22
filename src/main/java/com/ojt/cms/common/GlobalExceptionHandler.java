@@ -11,10 +11,9 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException e) {
 		return ResponseEntity.badRequest().body(e.getMessage());
 	}
-	
-	@ExceptionHandler(Exception.class)
-	public ResponseEntity<String> handleGeneral(Exception e) {
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-				.body("서버 오류가 발생했습니다.");
-	}
+//	@ExceptionHandler(Exception.class)
+//	public ResponseEntity<String> handleGeneral(Exception e) {
+//		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//				.body("서버 오류가 발생했습니다.");
+//	}
 }

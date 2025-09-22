@@ -1,9 +1,14 @@
 package com.ojt.cms.detail;
 
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+
 import com.ojt.cms.user.User;
 
+@Component
 public class DetailMapper {
-	public static Detail toEntity(DetailDTO dto) {
+	public Detail toEntity(DetailDTO dto) {
 		return Detail.builder()
 				.detailId(dto.getDetailId())
 				.address(dto.getAddress())
@@ -13,7 +18,7 @@ public class DetailMapper {
 				.build();
 	}
 	
-	public static DetailDTO toDTO(Detail entity) {
+	public DetailDTO toDTO(Detail entity) {
 		return DetailDTO.builder()
 				.detailId(entity.getDetailId())
 				.address(entity.getAddress())
@@ -21,5 +26,10 @@ public class DetailMapper {
 				.status(entity.getStatus())
 				.userId(entity.getUser()!=null? entity.getUser().getUserId():null)
 				.build();
+	}
+	public List<DetailDTO> toDTOList(List<Detail> dtoList) {
+	    return dtoList.stream()
+	            .map(this::toDTO)
+	            .toList();
 	}
 }

@@ -1,10 +1,14 @@
 package com.ojt.cms.license;
 
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+
 import com.ojt.cms.user.User;
 
-
+@Component
 public class LicenseMapper {
-	public static License toEntity(LicenseDTO dto) {
+	public License toEntity(LicenseDTO dto) {
 		return License.builder()
 				.licenseId(dto.getLicenseId())
 				.kosa(dto.getKosa())
@@ -14,7 +18,7 @@ public class LicenseMapper {
 				.build();
 	}
 	
-	public static LicenseDTO toDTO (License entity) {
+	public LicenseDTO toDTO (License entity) {
 		return LicenseDTO.builder()
 				.licenseId(entity.getLicenseId())
 				.kosa(entity.getKosa())
@@ -22,5 +26,11 @@ public class LicenseMapper {
 				.acDate(entity.getAcDate())
 				.userId(entity.getUser()!= null? entity.getUser().getUserId():null)
 				.build();
+	}
+	
+	public List<LicenseDTO> toDTOList(List<License> dtoList) {
+	    return dtoList.stream()
+	            .map(this::toDTO)
+	            .toList();
 	}
 }
