@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>회원 관리 리스트</title>
+	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <style>
+        body {
+            font-family: "Noto Sans KR", sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background: #f3f3f3;
+        }
+		th:nth-child(2) {
+			width: 180px;
+		}
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-approve {
+            background: #28a745;
+            color: white;
+        }
+        .btn-reject {
+            background: #dc3545;
+            color: white;
+        }
+        .btn-approve:hover {
+            background: #218838;
+        }
+        .btn-reject:hover {
+            background: #c82333;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+        }
+        .pagination a {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-decoration: none;
+            color: black;
+        }
+        .pagination a.active {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+		a {
+			text-decoration: none;
+			color:black;
+		}
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2><a th:href="@{/master/user-approval}">회원 관리 리스트</a></h2>
+
+    <!-- 검색 폼 -->
+	<form th:action="@{/master/user-approval}" method="get">
+	    <input type="hidden" name="page" value="1" id="page"/>
+
+	    <!-- 검색 타입 -->
+	    <select name="type" id="type">
+	        <option value="loginId" th:selected="${type == 'loginId' or type == null}">ID</option>
+	        <option value="name" th:selected="${type == 'name'}">이름</option>
+	        <option value="deptName" th:selected="${type == 'deptName'}">부서명</option>
+	    </select>
+
+	    <!-- 검색어 -->
+	    <input type="text" name="keyword" placeholder="조건별 조회"
+	           th:value="${keyword}">
+
+	    <button type="submit" class="btn">조회</button>
+
+	    <!-- 승인 상태 -->
+	    <select name="approved" id="approved">
+	        <option value="ALL" th:selected="${approved == 'ALL'}">전체</option>
+	        <option value="APPROVED" th:selected="${approved == 'APPROVED'}">승인</option>
+	        <option value="WAITING" th:selected="${approved == 'WAITING'}">승인대기</option>
+	        <option value="REJECTED" th:selected="${approved == 'REJECTED'}">거절</option>
+	    </select>
+	</form>
+
+
+    <!-- 회원 리스트 테이블 -->
+    <table>
+        <thead>
+        <tr>
+            <th>NO</th>
+            <th>부서</th>
+            <th>ID</th>
+            <th>이름</th>
+            <th>권한</th>
+            <th>승인여부</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user, stat : ${response.content}">
+            <td th:text="${stat.index + 1}"></td>
+            <td th:text="${user.deptName}"></td>
+            <td th:text="${user.loginId}"></td>
+            <td th:text="${user.name}"></td>
+<!--            <td th:text="${#temporals.format(user.requestDate, 'yyyy-MM-dd')}"></td>
+-->            
+			<td th:if="${#strings.equals(user.auth,'SUSPENDED')}">
+				대기중
+			</td>
+			<td th:if="${#strings.equals(user.auth,'REJECTED')}">
+				
+			</td>
+			<td th:if="${!#strings.equals(user.auth,'SUSPENDED')} and ${!#strings.equals(user.auth,'REJECTED')}">
+				<select name="auth" id="auth" class ="auth-select" th:data-user-id="${user.userId}">
+					<option th:value="MASTER" th:selected="${#strings.equals(user.auth,'MASTER')}" >최종관리자</option>
+			        <option th:value="ADMIN" th:selected="${#strings.equals(user.auth,'ADMIN')}">관리자</option>
+					<option th:value="MEMBER"  th:selected="${#strings.equals(user.auth,'MEMBER')}">사원</option>
+			    </select>
+			</td>
+			
+			<td th:if="${#strings.equals(user.approved,'WAITING')}">
+                <!-- 승인 버튼 -->
+                    <button type="button" class="btn btn-approve user-approval"
+                           th:data-user-id="${user.userId}" >승인</button>
+                <!-- 거절 버튼 -->
+                    <button type="button" class="btn btn-reject user-reject"
+                            th:data-user-id="${user.userId}">거절</button>
+            </td>
+			<td th:if="${#strings.equals(user.approved,'APPROVED')}">
+		        <span class="btn btn-approve" >승인완료</span>
+		    </td>
+			<td th:if="${#strings.equals(user.approved,'REJECTED')}">
+				<span class="btn btn-reject" >거절</span>
+			</td>
+        </tr>
+        <tr th:if="${response.content == null} or ${response.content.size()==0}">
+            <td colspan="6">등록된 회원 요청이 없습니다.</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- 페이징 -->
+	<div class="pagination" th:if="${totalPages >= 1}">
+	    <!-- 이전 버튼 -->
+	    <a th:if="${currentPage > 1}"
+	       th:href="@{/master/user-approval(page=${currentPage - 1}, keyword=${keyword}, type=${type}, approved=${approved})}">
+	        &laquo;
+	    </a>
+
+	    <!-- 페이지 번호 버튼 (앞뒤 5개만) -->
+	    <a th:each="page : ${#numbers.sequence(currentPage > 5 ? currentPage - 5 : 1,
+	                                           currentPage + 5 < totalPages ? currentPage + 5 : totalPages)}"
+	       th:href="@{/master/user-approval(page=${page}, keyword=${keyword}, type=${type}, approved=${approved})}"
+	       th:text="${page}"
+	       th:classappend="${page == currentPage} ? 'active' : ''">
+	    </a>
+
+	    <!-- 다음 버튼 -->
+	    <a th:if="${currentPage < totalPages}"
+	       th:href="@{/master/user-approval(page=${currentPage + 1}, keyword=${keyword}, type=${type}, approved=${approved})}">
+	        &raquo;
+	    </a>
+	</div>
+
+</div>
+
+<script th:inline="javascript">
+	$(function() {
+		// 승인 거절 ajax로 보내기
+		$(document).on('click', '.user-approval', function(e) {
+			e.preventDefault();
+			let $btn = $(this);
+			let userId = $btn.data('user-id');
+			if (confirm('회원을 승인하시겠습니까?')) {
+				$.ajax({
+					url:'/master/userApproval',
+					type:'put',
+					async:true,
+					dataType:'text',
+					data:{userId: userId},
+					success:function(result) {
+						let $row = $btn.closest('tr');
+						$btn.closest('td').html('<span class="btn btn-approve">승인완료</span>');
+						// 권한 select 값 변경 (MEMBER로 설정)
+
+						// 권한(td 5번째)을 select로 교체
+						$row.find('td').eq(4).html(`
+						    <select name="auth" class="auth-select" class ="auth-select" th:data-user-id="${user.userId}">
+						        <option value="MASTER">최종관리자</option>
+						        <option value="ADMIN">관리자</option>
+						        <option value="MEMBER" selected>사원</option>
+						    </select>
+						`);
+						console.log(userId+"승인 성공");
+					},
+					error:function(result) {
+						alert("승인 실패");
+					}
+				})
+			} else {
+				return false;
+			}
+		})
+		
+		$(document).on('click', '.user-reject', function(e) {
+			e.preventDefault();
+			let $btn = $(this);
+			let userId = $btn.data('user-id');
+			if (confirm('회원을 거절하시겠습니까?')) {
+				$.ajax({
+					url:'/master/userReject',
+					type:'put',
+					async:true,
+					dataType:'text',
+					data:{userId: userId},
+					success:function(result) {
+						let $row = $btn.closest('tr');
+						$btn.closest('td').html('<span class="btn btn-reject">거절</span>');
+						$row.find('td').eq(4).html('');
+						console.log(userId+"거절 성공");
+					},
+					error:function(result) {
+						alert("거절 실패");
+					}
+				})
+			} else {
+				return false;
+			}
+		})
+	})
+	
+	$(document).on('change', '.auth-select', function() {
+		let $select = $(this);
+		let newAuth = $select.val();
+		console.log("선택된 권한:", newAuth);
+		// select에 data-user-id 이미 있으니까 그걸 가져오기
+		let userId = $select.data('user-id');
+		console.log("userId:", userId);
+		
+	    $.ajax({
+	        url: '/master/userAuth/' + userId,
+	        type: 'PUT',  // PUT 요청
+			contentType: 'application/json; charset=utf-8',
+			data: JSON.stringify({ auth: newAuth }),
+	        success: function(result) {
+	            console.log("권한 변경 성공 → " + newAuth);
+	        },
+	        error: function(err) {
+	            alert("권한 변경 실패");
+	        }
+	    });
+	});
+
+</script>
+</body>
+</html>

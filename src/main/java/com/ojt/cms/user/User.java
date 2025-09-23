@@ -82,4 +82,13 @@ public class User extends BaseEntity {
     	this.ipInfo=ipAddress;
     	this.logInfo=LocalDateTime.now();
     }
+    
+    //가입 거절 또는 승인
+    public void setApprove(ApprovedStatus approve) {
+        this.approved = approve;
+    }
+    //권한변경
+    public void setAuth(AuthRole auth) {
+        this.auth =auth;
+    }
 }

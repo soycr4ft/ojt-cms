@@ -1,10 +1,12 @@
 package com.ojt.cms.user;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
 
 import com.ojt.cms.department.Department;
+import com.ojt.cms.user.dto.ApprovedUserResponseDTO;
 import com.ojt.cms.user.dto.UserDTO;
 import com.ojt.cms.user.dto.UserJoinDTO;
 import com.ojt.cms.user.enums.ApprovedStatus;
@@ -55,6 +57,20 @@ public class UserMapper {
 	    return dtoList.stream()
 	            .map(this::toDTO)
 	            .toList();
+	}
+	
+	public List<ApprovedUserResponseDTO> toApprovedDTOList(List<User> dtoList) {
+		List<ApprovedUserResponseDTO> results = new ArrayList<>();;
+		for (User user : dtoList) {
+			results.add(ApprovedUserResponseDTO.builder()
+					.deptName(user.getDepartment().getDeptName())
+					.loginId(user.getLoginId())
+					.name(user.getName())
+					.createdAt(user.getCreatedAt())
+					.approved(user.getApproved())
+					.build());
+		}
+		return results;
 	}
     
 }

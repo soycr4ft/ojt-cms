@@ -1,16 +1,10 @@
 package com.ojt.cms.common;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import com.ojt.cms.department.Department;
-import com.ojt.cms.user.enums.ApprovedStatus;
-import com.ojt.cms.user.enums.AuthRole;
-import com.ojt.cms.user.enums.Gender;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

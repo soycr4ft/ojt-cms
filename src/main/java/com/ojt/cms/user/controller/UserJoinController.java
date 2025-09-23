@@ -1,4 +1,4 @@
-package com.ojt.cms.user;
+package com.ojt.cms.user.controller;
 
 import java.util.List;
 
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ojt.cms.department.DepartmentDTO;
 import com.ojt.cms.department.DepartmentService;
+import com.ojt.cms.user.UserService;
 import com.ojt.cms.user.dto.UserJoinDTO;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class UserJoinController {
     private final DepartmentService departmentService;
     private final UserService userService;
+    
 	@GetMapping("/join")
     public String joinForm(Model model) throws Exception {
 	    model.addAttribute("user", new UserJoinDTO()); 
