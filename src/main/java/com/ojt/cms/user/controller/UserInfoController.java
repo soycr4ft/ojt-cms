@@ -3,14 +3,12 @@ package com.ojt.cms.user.controller;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,6 +18,7 @@ import com.ojt.cms.common.FileService;
 import com.ojt.cms.department.DepartmentDTO;
 import com.ojt.cms.department.DepartmentService;
 import com.ojt.cms.user.UserService;
+import com.ojt.cms.user.dto.ModifyUserInfoDTO;
 import com.ojt.cms.user.dto.UserInfoResponseDTO;
 import com.ojt.cms.user.dto.UserLoginDTO;
 
@@ -50,31 +49,28 @@ public class UserInfoController {
     
     @PostMapping("/info-modify")
 	@ResponseBody
-    public ResponseEntity<?> userInfoModify( @ModelAttribute UserInfoResponseDTO dto,
-    		@RequestParam(value = "profile", required = false) MultipartFile profile, 
+    public ResponseEntity<?> userInfoModify( @ModelAttribute ModifyUserInfoDTO dto,
+    		@RequestParam(value = "profileFile", required = false) MultipartFile profileFile, 
     		HttpSession session) {
 
     	try {
-    		if (profile!=null && !profile.isEmpty()) {
-    			String fileName = fileService.storeFile(profile);
+    		if (profileFile!=null && !profileFile.isEmpty()) {
+    			System.out.println(profileFile.getOriginalFilename());
+    			String fileName = fileService.storeFile(profileFile);
+    			System.out.println(fileName);
     			dto.setProfile(fileName);
     		}
     		userService.modifyUserInfo(dto);
+    		UserLoginDTO loginUser= userService.getUserLoginDTO(dto.getUserId());
+    		
     		//세션 갱신
-    		session.setAttribute("loginUser", 
-    			    new UserLoginDTO(
-    			    		dto.getLoginId(),
-    			    		dto.getLogInfo(),
-    			    		dto.getIpInfo(),
-    			    		dto.getName(),
-    			    		dto.getRole())
-    		);
+    		session.setAttribute("loginUser", loginUser);
             return ResponseEntity.ok("수정 성공");
 
 		} catch (Exception e) {
 			e.printStackTrace();
-	        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("요청 값이 잘못되었습니다.");		
+	        return ResponseEntity.badRequest().body("요청 처리 중 오류가 발생했습니다.");
+
         }
     }
 }

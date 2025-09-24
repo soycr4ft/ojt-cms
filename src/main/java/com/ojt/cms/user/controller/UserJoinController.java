@@ -54,12 +54,18 @@ public class UserJoinController {
 		String ipAddress = request.getRemoteAddr();
 		userService.join(userJoinDTO, ipAddress);
 	    model.addAttribute("status", "joined"); 
-        return "redirect:/user/join-complete";
+        return "redirect:/user/join-complete/joined";
     }	
 	
 	//회원가입 완료 페이지
 	@GetMapping("/join-complete/{status}")
     public String joinComplete(Model model, @PathVariable("status") String status, HttpSession session) throws Exception {
+		if (status.equals("joined")) {
+			
+			model.addAttribute("status", status); 
+	        return "user/join-complete";
+		}
+		
 		if (ApprovedStatus.from(status)==ApprovedStatus.APPROVED || ApprovedStatus.from(status)==ApprovedStatus.WAITING) {
 			UserLoginDTO user = (UserLoginDTO) session.getAttribute("loginUser");
 			//로그인 완료 후 dto 뿌리기
@@ -68,6 +74,7 @@ public class UserJoinController {
 		
 		model.addAttribute("status", status); 
         return "user/join-complete";
+
     }
 	
 	//로그아웃

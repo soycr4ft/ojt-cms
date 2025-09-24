@@ -14,11 +14,13 @@ import com.ojt.cms.common.PasswordEncoder;
 import com.ojt.cms.department.DepartmentRepository;
 import com.ojt.cms.detail.Detail;
 import com.ojt.cms.detail.DetailRepository;
+import com.ojt.cms.detail.enums.UserProjStatus;
 import com.ojt.cms.mail.MailHtmlSendDTO;
 import com.ojt.cms.mail.MailSendService;
 import com.ojt.cms.search.PageResponseDTO;
 import com.ojt.cms.user.dto.ApprovedUserResponseDTO;
 import com.ojt.cms.user.dto.ApprovedUserSearchDTO;
+import com.ojt.cms.user.dto.ModifyUserInfoDTO;
 import com.ojt.cms.user.dto.UserInfoResponseDTO;
 import com.ojt.cms.user.dto.UserJoinDTO;
 import com.ojt.cms.user.dto.UserLoginDTO;
@@ -166,7 +168,7 @@ public class UserServiceImpl implements UserService {
 
 	@Transactional
 	@Override
-	public void modifyUserInfo(UserInfoResponseDTO dto) throws Exception {
+	public void modifyUserInfo(ModifyUserInfoDTO dto) throws Exception {
 		//유저의 기본정보 수정
 		User user = userRepository.findById(dto.getUserId()).orElseThrow(()->new Exception("해당 아이디를 가진 회원이 없습니다."));
 		
@@ -179,11 +181,24 @@ public class UserServiceImpl implements UserService {
                     .address1(dto.getAddress1())
                     .address2(dto.getAddress2())
                     .profile(dto.getProfile())
+                    .status(UserProjStatus.WAITING)
                     .build();
 	        detailRepository.save(detail);
 		} else {
 			detail.modifyUserInfo(dto);
 		}
+	}
+
+	@Override
+	public UserLoginDTO getUserLoginDTO(Long userId) throws Exception {
+		User user = userRepository.findById(userId).orElseThrow(()-> new Exception("존재하지 않는 회원"));
+		return UserLoginDTO.builder()
+			    .loginId(user.getLoginId())
+			    .logInfo(user.getLogInfo())
+			    .ipInfo(user.getIpInfo())
+			    .name(user.getName())
+			    .role(user.getAuth())
+			    .build();
 	}
 
 }

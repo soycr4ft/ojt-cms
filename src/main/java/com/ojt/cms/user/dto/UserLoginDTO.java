@@ -10,9 +10,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@AllArgsConstructor
 public class UserLoginDTO { //세션 저장용
 	private String loginId;
 	private LocalDateTime logInfo;

@@ -23,10 +23,12 @@ public class FileService {
         // 파일명 충돌 방지를 위해 UUID 추가
         String saveFileName = java.util.UUID.randomUUID() + "_" + originalFilename;
         // 저장할 경로
-        Path targetPath = Paths.get(iuploadPath + saveFileName);
+        Path uploadDir = Paths.get(iuploadPath);
+        Path targetPath = uploadDir.resolve(saveFileName);
         // 디렉토리 없으면 생성
-        Files.createDirectories(targetPath.getParent());
-        // 실제 파일 저장
+        if (!Files.exists(uploadDir)) {
+            Files.createDirectories(uploadDir);
+        }        // 실제 파일 저장
         file.transferTo(targetPath.toFile());
         // DB에는 접근 가능한 URL 또는 경로만 저장
         return saveFileName;

@@ -61,22 +61,23 @@
         <!-- 사진 영역 -->
         <div class="col-md-4 text-center">
           <div class="card p-3">
-			<input type="hidden" name="userId" id="userId" value=${user.userId } >
-			<input type="hidden" name="ipInfo" id="ipInfo" value=${user.ipInfo } >
-			<input type="hidden" name="role" id="role" value=${user.role } >
-			<input type="hidden" name="loginId" id="loginId" value=${user.loginId } >
-			<input type="hidden" name="logInfo" id="logInfo" value=${user.logInfo } >
-			<input type="hidden" name="updatedAt" id="updatedAt" value=${user.updatedAt } >
+			<input type="hidden" name="userId" id="userId" th:value="${user.userId}" />
+			<input type="hidden" name="loginId" id="loginId" th:value="${user.loginId}" />
 
+			<input type="hidden" name="profile" th:value="${user.profile}" />
 			
-			 <img th:if="${user != null and user.profile != null}" th:src="@{'/uploads/' + ${user.profile}}" class="img-fluid mb-3" alt="프로필 사진">
 			 <img th:unless="${user != null and user.profile != null}" th:src="@{/images/default_profile.png}"class="img-fluid mb-3" alt="프로필 사진"
 			  id="preview">
             <button type="button" th:unless="${user != null and user.profile != null}"  class="btn btn-primary btn-sm" 
-			 onclick="document.getElementById('profile').click();">사진등록</button>
-
-				<input type="file" name="profile" id="profile" accept="image/*" style="display: none"
+			 onclick="document.getElementById('profileFile').click();">사진등록</button>
+            <input th:unless="${user != null and user.profile != null}" type="file" name="profileFile" id="profileFile" accept="image/*" style="display: none"
 					onchange="readURL(this);">
+            
+  			<img th:if="${user != null and user.profile != null}" th:src="@{'/uploads/' + ${user.profile}}" class="img-fluid mb-3" alt="프로필 사진"  id="preview">
+            <button type="button" th:if="${user != null and user.profile != null}"  class="btn btn-primary btn-sm" 
+			 onclick="document.getElementById('profileFile').click();">사진수정</button>
+            <input th:if="${user != null and user.profile != null}" type="file" name="profileFile" id="profileFile" accept="image/*" style="display: none"
+					onchange="readURL(this);">				
          </div>
         </div>
 
@@ -164,23 +165,26 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-	function  readURL(input) {
-		if(input.files && input.files[0]) {
-			var reader = new FileReader();
-			reader.onload = function(e) {
-				document.getElementById("preview").src = e.target.result;
-			}
-			reader.readAsDataURL(input.files[0]);
-		}
+	function readURL(input) {
+	    if (input.files && input.files[0]) {
+	        var reader = new FileReader();
+	        reader.onload = function(e) {
+	            document.getElementById("preview").src = e.target.result;
+	            console.log("preview src:", e.target.result); // 여기서 확인
+	        };
+	        reader.readAsDataURL(input.files[0]); // 딱 한 번만 호출
+	    }
 	}
+	
 </script>
 <script th:inline="javascript">
 	function modifyInfo(event) {
 
 	event.preventDefault();
 	const formData = new FormData(document.getElementById("userForm"));
-	console.log("formData:", formData);
-
+	for (let pair of formData.entries()) {
+	    console.log(pair[0]+ ': ' + pair[1]);
+	}
     $.ajax({
         url: '/user/info-modify',
         type: 'POST',  // PUT 요청

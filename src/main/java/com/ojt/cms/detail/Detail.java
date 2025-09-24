@@ -3,7 +3,7 @@ package com.ojt.cms.detail;
 import com.ojt.cms.common.BaseEntity;
 import com.ojt.cms.detail.enums.UserProjStatus;
 import com.ojt.cms.user.User;
-import com.ojt.cms.user.dto.UserInfoResponseDTO;
+import com.ojt.cms.user.dto.ModifyUserInfoDTO;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -46,7 +46,7 @@ public class Detail extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
-	public void modifyUserInfo(UserInfoResponseDTO dto) {
+	public void modifyUserInfo(ModifyUserInfoDTO dto) {
 		this.address1=dto.getAddress1();
 		this.address2=dto.getAddress2();
 		this.profile=dto.getProfile();
