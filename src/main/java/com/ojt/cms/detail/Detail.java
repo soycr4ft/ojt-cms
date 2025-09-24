@@ -3,6 +3,7 @@ package com.ojt.cms.detail;
 import com.ojt.cms.common.BaseEntity;
 import com.ojt.cms.detail.enums.UserProjStatus;
 import com.ojt.cms.user.User;
+import com.ojt.cms.user.dto.UserInfoResponseDTO;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,7 +30,10 @@ public class Detail extends BaseEntity {
     private Long detailId;
 
     @Column(nullable = false, length = 255)
-    private String address;
+    private String address1;
+    
+    @Column(nullable = false, length = 255)
+    private String address2; //상세주소
 
     @Column(nullable = false, length = 255)
     private String profile;
@@ -41,4 +45,10 @@ public class Detail extends BaseEntity {
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
+
+	public void modifyUserInfo(UserInfoResponseDTO dto) {
+		this.address1=dto.getAddress1();
+		this.address2=dto.getAddress2();
+		this.profile=dto.getProfile();
+	}
 }

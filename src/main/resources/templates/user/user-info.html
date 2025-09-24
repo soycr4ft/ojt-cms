@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head th:replace="layout/header :: header-head"></head>
+  <meta charset="UTF-8">
+  <title>사원 정보</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+  <script>
+      function daumPostcode() {
+          new daum.Postcode({
+              oncomplete: function(data) {
+                  // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+                  // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+                  // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                  var addr = ''; // 주소 변수
+                  var extraAddr = ''; // 참고항목 변수
+
+                  //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+                  if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                      addr = data.roadAddress;
+                  } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                      addr = data.jibunAddress;
+                  }
+   
+                  document.getElementById("address1").value = addr;
+                  // 커서를 상세주소 필드로 이동한다.
+                  document.getElementById("address2").focus();
+              }
+          }).open();
+      }
+  </script>
+  </head>
+<body>
+
+<div th:replace="layout/header :: header"></div>
+<main class="container mt-4">
+
+  <!-- 탭 메뉴 -->
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#all">전체보기</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#career">경력등록</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#info">사원 정보</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#password">비밀번호 수정</button>
+    </li>
+  </ul>
+
+  <!-- 탭 내용 -->
+  <div class="tab-content border p-4">
+    <!-- 사원 정보 -->
+    <div class="tab-pane fade show active" id="info">
+      <form class="row" id="userForm" onsubmit="modifyInfo(event)" enctype="multipart/form-data">
+        <!-- 사진 영역 -->
+        <div class="col-md-4 text-center">
+          <div class="card p-3">
+			<input type="hidden" name="userId" id="userId" value=${user.userId } >
+			<input type="hidden" name="ipInfo" id="ipInfo" value=${user.ipInfo } >
+			<input type="hidden" name="role" id="role" value=${user.role } >
+			<input type="hidden" name="loginId" id="loginId" value=${user.loginId } >
+			<input type="hidden" name="logInfo" id="logInfo" value=${user.logInfo } >
+			<input type="hidden" name="updatedAt" id="updatedAt" value=${user.updatedAt } >
+
+			
+			 <img th:if="${user != null and user.profile != null}" th:src="@{'/uploads/' + ${user.profile}}" class="img-fluid mb-3" alt="프로필 사진">
+			 <img th:unless="${user != null and user.profile != null}" th:src="@{/images/default_profile.png}"class="img-fluid mb-3" alt="프로필 사진"
+			  id="preview">
+            <button type="button" th:unless="${user != null and user.profile != null}"  class="btn btn-primary btn-sm" 
+			 onclick="document.getElementById('profile').click();">사진등록</button>
+
+				<input type="file" name="profile" id="profile" accept="image/*" style="display: none"
+					onchange="readURL(this);">
+         </div>
+        </div>
+
+        <!-- 정보 입력 영역 -->
+        <div class="col-md-8">
+            <div class="mb-3 row">
+              <label class="col-sm-2 col-form-label">이름<span style="color:red;">*</span></label>
+              <div class="col-sm-10">
+                <input type="text" name="name" th:value="${user.name}" class="form-control" required>
+              </div>
+            </div>
+
+            <div class="mb-3 row">
+              <label class="col-sm-2 col-form-label">부서<span style="color:red;">*</span></label>
+              <div class="col-sm-10">
+                <select name="deptId" class="form-select">
+                  <option th:each="dept : ${departments}"
+                          th:value="${dept.deptId}"
+                          th:text="${dept.deptName}"
+                          th:selected="${dept.deptId == user.deptId}">
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <div class="mb-3 row">
+              <label class="col-sm-2 col-form-label">휴대폰 번호<span style="color:red;">*</span></label>
+              <div class="col-sm-10 d-flex gap-2">
+                <input type="text" name="phone1" th:value="${user.phone1}" class="form-control" style="max-width:80px" required>
+                <input type="text" name="phone2" th:value="${user.phone2}" class="form-control" style="max-width:100px" required>
+                <input type="text" name="phone3" th:value="${user.phone3}" class="form-control" style="max-width:100px" required>
+              </div>
+            </div>
+
+            <div class="mb-3 row">
+              <label class="col-sm-2 col-form-label">이메일<span style="color:red;">*</span></label>
+              <div class="col-sm-10 d-flex gap-2">
+                <input type="text" name="emailId" th:value="${user.emailId}" class="form-control" style="max-width:150px"  required>
+                <span class="align-self-center">@</span>
+				
+				<select name="emailDomain" class="form-select" style="min-width:180px"
+                        th:value="${user.emailDomain}">
+                  <option value="">- 이메일 선택 -</option>
+                  <option value="naver.com" th:selected="${user.emailDomain == 'naver.com'}">naver.com</option>
+                  <option value="gmail.com" th:selected="${user.emailDomain == 'gmail.com'}">gmail.com</option>
+                  <option value="naedamcnc.com" th:selected="${user.emailDomain == 'naedamcnc.com'}">naedamcnc.com</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="mb-3 row">
+              <label class="col-sm-2 col-form-label">주소
+				<span style="color:red;">*</span>
+			  </label>
+              <div class="col-sm-10 d-flex gap-2">
+                <input type="text" name="address1" id="address1"  th:value="${user.address1}" class="form-control" required>
+                <button type="button" class="btn btn-secondary" onclick="daumPostcode()">주소검색</button>
+              </div>
+            </div>
+
+            <div class="mb-3 row">
+              <div class="offset-sm-2 col-sm-10">
+                <input type="text" name="address2" id="address2" th:value="${user.address2}" class="form-control" required>
+              </div>
+            </div>
+
+            <div class="text-center mt-4">
+              <button type="submit" class="btn btn-primary px-5">수정하기</button>
+            </div>
+        </div>
+      </form>
+
+      <div class="mt-4 small text-muted">
+        <p>최근 수정일 : <span th:text="${#temporals.format(user.updatedAt, 'yyyy.MM.dd HH:mm:ss')}"></span></p>
+        <p>최근 접속일 : <span th:text="${#temporals.format(user.logInfo, 'yyyy.MM.dd HH:mm:ss')}"></span></p>
+        <p>최근 접속IP : <span th:text="${user.ipInfo}"></span></p>
+      </div>
+    </div>
+  </div>
+
+</main>
+<div th:replace="layout/footer :: footer"></div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+	function  readURL(input) {
+		if(input.files && input.files[0]) {
+			var reader = new FileReader();
+			reader.onload = function(e) {
+				document.getElementById("preview").src = e.target.result;
+			}
+			reader.readAsDataURL(input.files[0]);
+		}
+	}
+</script>
+<script th:inline="javascript">
+	function modifyInfo(event) {
+
+	event.preventDefault();
+	const formData = new FormData(document.getElementById("userForm"));
+	console.log("formData:", formData);
+
+    $.ajax({
+        url: '/user/info-modify',
+        type: 'POST',  // PUT 요청
+		processData: false,
+		contentType: false,
+		data: formData,
+        success: function(result) {
+			alert("수정 완료!");
+        },
+        error: function(err) {
+			alert("수정 실패");
+        }
+    });
+}
+</script>
+</body>
+</html>

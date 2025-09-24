@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
-<head>
+	<head th:replace="layout/header :: header-head"></head>
     <meta charset="UTF-8">
     <title>로그인</title>
     <style>
@@ -97,12 +97,13 @@
     </style>
 </head>
 <body>
+	<div th:replace="layout/header :: header"></div>
 
 <!-- 상단 메인 사진 -->
-<div class="main-image"></div>
-
+<!--<div class="main-image"></div>
+-->
 <!-- 본문 -->
-<div class="container">
+<main class="container">
 
     <!-- 공지사항 -->
     <div class="notice">
@@ -133,15 +134,43 @@
     <!-- 로그인 박스 -->
     <div class="login-box">
         <h2>로그인</h2>
-        <form th:action="@{/login}" method="post">
-            <input type="text" name="username" placeholder="아이디를 입력하세요" required>
-            <input type="password" name="password" placeholder="비밀번호를 입력하세요" required>
-            <a th:href="@{/findAccount}">아이디 비밀번호 찾기</a>
-            <button type="submit" class="btn-login">로그인</button>
+        <form id="loginForm" onsubmit="doLogin(event)">
+            <input type="text" id="loginId" name="loginId" placeholder="아이디를 입력하세요" required>
+            <input type="password" id="password" name="password" placeholder="비밀번호를 입력하세요" required>
+			<div id="errorMessage" style="color:red;"></div>
+			<a th:href="@{/findAccount}">아이디 비밀번호 찾기</a>
+			<button type="submit" class="btn-login" >로그인</button>
             <button type="button" class="btn-join" th:onclick="|location.href='@{/user/join}'|">회원가입</button>
         </form>
     </div>
 
-</div>
+</main>
+<div th:replace="layout/footer :: footer"></div>
+<script>
+function doLogin(event) {
+	event.preventDefault();
+  fetch('/login', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      loginId: document.getElementById('loginId').value,
+      password: document.getElementById('password').value
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+		let status = data.status;
+		if (status === 'waiting') {
+		    location.href = '/user/join-complete/waiting';
+		} else if (status === 'approval') {
+		    location.href = '/user/join-complete/approval';
+		}
+    } else {
+      document.getElementById('errorMessage').innerText = data.message;
+    }
+  })
+}
+</script>
 </body>
 </html>

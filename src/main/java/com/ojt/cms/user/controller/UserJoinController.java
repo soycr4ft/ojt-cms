@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,8 +16,11 @@ import com.ojt.cms.department.DepartmentDTO;
 import com.ojt.cms.department.DepartmentService;
 import com.ojt.cms.user.UserService;
 import com.ojt.cms.user.dto.UserJoinDTO;
+import com.ojt.cms.user.dto.UserLoginDTO;
+import com.ojt.cms.user.enums.ApprovedStatus;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 
@@ -46,9 +50,30 @@ public class UserJoinController {
 	
 	//회원가입 폼 제출
 	@PostMapping("/join")
-	public String join(@ModelAttribute UserJoinDTO userJoinDTO,HttpServletRequest request) throws Exception {
+	public String join(Model model, @ModelAttribute UserJoinDTO userJoinDTO,HttpServletRequest request) throws Exception {
 		String ipAddress = request.getRemoteAddr();
 		userService.join(userJoinDTO, ipAddress);
-        return "redirect:/";
+	    model.addAttribute("status", "joined"); 
+        return "redirect:/user/join-complete";
     }	
+	
+	//회원가입 완료 페이지
+	@GetMapping("/join-complete/{status}")
+    public String joinComplete(Model model, @PathVariable("status") String status, HttpSession session) throws Exception {
+		if (ApprovedStatus.from(status)==ApprovedStatus.APPROVED || ApprovedStatus.from(status)==ApprovedStatus.WAITING) {
+			UserLoginDTO user = (UserLoginDTO) session.getAttribute("loginUser");
+			//로그인 완료 후 dto 뿌리기
+			model.addAttribute("user", user); 
+		}
+		
+		model.addAttribute("status", status); 
+        return "user/join-complete";
+    }
+	
+	//로그아웃
+    @PostMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/";
+    }
 }

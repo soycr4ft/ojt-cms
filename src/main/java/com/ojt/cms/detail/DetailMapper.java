@@ -11,7 +11,8 @@ public class DetailMapper {
 	public Detail toEntity(DetailDTO dto) {
 		return Detail.builder()
 				.detailId(dto.getDetailId())
-				.address(dto.getAddress())
+				.address1(dto.getAddress1())
+				.address2(dto.getAddress2())
 				.profile(dto.getProfile())
 				.status(dto.getStatus())
 				.user(dto.getUserId()!=null? User.builder().userId(dto.getUserId()).build():null)
@@ -21,7 +22,8 @@ public class DetailMapper {
 	public DetailDTO toDTO(Detail entity) {
 		return DetailDTO.builder()
 				.detailId(entity.getDetailId())
-				.address(entity.getAddress())
+				.address1(entity.getAddress1())
+				.address2(entity.getAddress2())
 				.profile(entity.getProfile())
 				.status(entity.getStatus())
 				.userId(entity.getUser()!=null? entity.getUser().getUserId():null)

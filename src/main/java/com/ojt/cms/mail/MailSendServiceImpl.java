@@ -1,14 +1,8 @@
 package com.ojt.cms.mail;
 
-import java.io.IOException;
-import java.util.Base64;
-
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StreamUtils;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 

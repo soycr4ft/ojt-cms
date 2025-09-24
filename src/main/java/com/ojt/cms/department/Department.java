@@ -25,4 +25,8 @@ public class Department extends BaseEntity {
     
     @Column(nullable = false, length = 50)
     private String deptName;   
+    
+    public Department(Long deptId) {
+    	this.deptId=deptId;
+    }
 }

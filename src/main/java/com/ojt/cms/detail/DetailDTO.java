@@ -17,7 +17,8 @@ import lombok.ToString;
 @ToString
 public class DetailDTO {
     private Long detailId;
-    private String address;
+    private String address1;
+    private String address2;
     private String profile;
     private UserProjStatus status;
     private Long userId;

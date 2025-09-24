@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import com.ojt.cms.common.BaseEntity;
 import com.ojt.cms.department.Department;
+import com.ojt.cms.user.dto.UserInfoResponseDTO;
 import com.ojt.cms.user.enums.ApprovedStatus;
 import com.ojt.cms.user.enums.AuthRole;
 import com.ojt.cms.user.enums.Gender;
@@ -91,4 +92,15 @@ public class User extends BaseEntity {
     public void setAuth(AuthRole auth) {
         this.auth =auth;
     }
+
+	public void changePassword(String encodedPW) {
+	    this.password = encodedPW;
+	}
+
+	public void modifyUserInfo(UserInfoResponseDTO dto) {
+		this.name=dto.getName();
+		this.phone=dto.getPhone1()+"-"+dto.getPhone2()+"-"+dto.getPhone3();
+		this.email=dto.getEmailId()+"@"+dto.getEmailDomain();
+		this.department= new Department(dto.getDeptId());
+	}
 }

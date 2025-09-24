@@ -1,68 +1,55 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <title>회원가입 완료</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-    <style>
-        body {
-            font-family: "Noto Sans KR", sans-serif;
-            background-color: #fff;
-            margin: 0;
-        }
-        .container {
-            max-width: 800px;
-            margin: 80px auto;
-            padding: 30px;
-            text-align: center;
-        }
-        .card {
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            padding: 50px 30px;
-            background: #fafafa;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        .card h2 {
-            font-size: 24px;
-            margin-bottom: 15px;
-        }
-        .card p {
-            font-size: 16px;
-            color: #555;
-            margin-bottom: 30px;
-        }
-        .btn-home {
-            display: inline-block;
-            padding: 12px 24px;
-            background: #dc3545;
-            color: #fff;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 4px;
-            text-decoration: none;
-        }
-        .btn-home:hover {
-            background: #c82333;
-        }
-    </style>
-</head>
+<head th:replace="layout/header :: header-head"></head>
 <body>
 
-<!-- 헤더 include -->
-<div th:replace="fragments/header :: header"></div>
+<!-- header fragment -->
+<div th:replace="layout/header :: header"></div>
 
-<div class="container">
-    <div class="card">
+<main class="container">
+
+    <!-- 1. 최초 회원가입 완료 -->
+    <section class="join-complete-box" th:if="${status == 'joined'}">
         <h2>회원 가입이 완료되었습니다.</h2>
         <p>관리자가 가입 절차를 진행하고 있습니다.<br>
-            가입 승인을 기다려주시기 바랍니다.</p>
-        <a th:href="@{/}" class="btn-home">홈으로</a>
-    </div>
-</div>
+           가입 승인을 기다려주시기 바랍니다.</p>
+        <a th:href="@{/}" class="btn btn-danger">홈으로</a>
+    </section>
 
-<!-- 푸터 include -->
-<div th:replace="fragments/footer :: footer"></div>
+    <!-- 2. 승인 대기 중 -->
+    <section class="join-complete-box" th:if="${status == 'waiting'}">
+        <h2>회원가입 승인 중입니다.</h2>
+        <p>관리자가 가입 절차를 진행하고 있습니다.<br>
+           가입 승인을 기다려주시기 바랍니다.</p>
+        <a th:href="@{/}" class="btn btn-danger">홈으로</a>
+    </section>
+
+    <!-- 3. 승인 완료 (로그인 성공) -->
+    <section class="welcome-box" th:if="${status == 'approval'}">
+        <h2>ND SW기술자 경력관리시스템</h2>
+        <p>ND기술자의 경력을 체계적으로 관리하고, 개발자 배치를 효율적으로 관리하는 시스템입니다.</p>
+
+        <div class="user-info-box">
+            <strong th:text="${user.name} + '님'"></strong>
+            <p>
+                <span th:text="${user.name}"></span>님 ND SW기술자 경력관리시스템에 오신 것을 환영합니다.<br>
+                최근 접속 일시 : <span th:text="${#temporals.format(user.logInfo, 'yyyy-MM-dd HH:mm')}"></span><br>
+                최근 접속 IP 주소 : <span th:text="${user.ipInfo}"></span><br>
+                <span th:text="${user.role}"></span>으로 로그인 하셨습니다.
+            </p>
+            <div class="user-links">
+				<form th:action="@{/user/logout}" method="post">
+					<button type="submit">로그아웃</button> 
+				</form>
+                <a th:href="@{/user/user-info}">회원정보</a>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<!-- footer fragment -->
+<div th:replace="layout/footer :: footer"></div>
 
 </body>
 </html>
