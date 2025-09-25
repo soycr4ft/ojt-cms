@@ -35,7 +35,7 @@ public class Detail extends BaseEntity {
     @Column(nullable = false, length = 255)
     private String address2; //상세주소
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = true, length = 255)
     private String profile;
 
     @Enumerated(EnumType.STRING)

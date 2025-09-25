@@ -33,7 +33,7 @@
             <strong th:text="${user.name} + '님'"></strong>
             <p>
                 <span th:text="${user.name}"></span>님 ND SW기술자 경력관리시스템에 오신 것을 환영합니다.<br>
-                최근 접속 일시 : <span th:text="${#temporals.format(user.logInfo, 'yyyy-MM-dd HH:mm')}"></span><br>
+                최근 접속 일시 : <span th:text="${#temporals.format(user.logInfo2, 'yyyy-MM-dd HH:mm')}"></span><br>
                 최근 접속 IP 주소 : <span th:text="${user.ipInfo}"></span><br>
                 <span th:text="${user.role}"></span>으로 로그인 하셨습니다.
             </p>

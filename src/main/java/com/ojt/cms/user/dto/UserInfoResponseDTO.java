@@ -15,11 +15,11 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UserInfoResponseDTO {
 	private Long userId;
-	private LocalDateTime logInfo;
+	private LocalDateTime logInfo2;
 	private String ipInfo;
 	private String name;
 	private AuthRole role;
-	private LocalDateTime updatedAt;
+	private LocalDateTime lastUpdatedAt;
 	private String address1;
 	private String address2;
 	private Long deptId;

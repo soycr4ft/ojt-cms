@@ -20,6 +20,7 @@ import com.ojt.cms.mail.MailSendService;
 import com.ojt.cms.search.PageResponseDTO;
 import com.ojt.cms.user.dto.ApprovedUserResponseDTO;
 import com.ojt.cms.user.dto.ApprovedUserSearchDTO;
+import com.ojt.cms.user.dto.ModifyPasswordRequestDTO;
 import com.ojt.cms.user.dto.ModifyUserInfoDTO;
 import com.ojt.cms.user.dto.UserInfoResponseDTO;
 import com.ojt.cms.user.dto.UserJoinDTO;
@@ -110,7 +111,6 @@ public class UserServiceImpl implements UserService {
 	public void modifyUserAuth(Long userId, String newAuth) throws Exception {
 		User user = userRepository.findById(userId).orElseThrow(()-> new Exception("해당 회원을 찾을 수 없습니다."));
 		AuthRole status = AuthRole.from(newAuth);
-		System.out.println(status);
 		user.setAuth(status);
 	}
 	
@@ -127,6 +127,12 @@ public class UserServiceImpl implements UserService {
             return result;
         }
         User user = optionalUser.get();
+        
+        if (user.getDeleted()) {
+            result.put("success", false);
+            result.put("message", "탈퇴한 계정입니다.");
+            return result;
+        }
  
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             result.put("success", false);
@@ -194,11 +200,47 @@ public class UserServiceImpl implements UserService {
 		User user = userRepository.findById(userId).orElseThrow(()-> new Exception("존재하지 않는 회원"));
 		return UserLoginDTO.builder()
 			    .loginId(user.getLoginId())
-			    .logInfo(user.getLogInfo())
+			    .logInfo2(user.getLogInfo2())
 			    .ipInfo(user.getIpInfo())
 			    .name(user.getName())
 			    .role(user.getAuth())
 			    .build();
 	}
+
+	@Transactional
+	@Override
+	public Boolean userWithdraw(Long userId) throws Exception {
+		User user = userRepository.findById(userId).orElseThrow(()-> new Exception("존재하지 않는 회원"));
+		user.withdraw();
+		return true;
+	}
+
+	@Override
+	@Transactional
+	public Map<String, Object> modifyPassword(ModifyPasswordRequestDTO dto) throws Exception {
+		Map<String, Object> result = new HashMap<>();
+		User user = userRepository.findById(dto.getUserId()).orElseThrow(()->new Exception("해당 아이디를 가진 회원이 없습니다."));
+
+        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+            result.put("success", false);
+            result.put("message", "현재 비밀번호가 일치하지 않습니다.");
+            return result;
+        }
+        
+        if (!dto.getNewPassword().equals(dto.getConfirmPassword())) {
+            result.put("success", false);
+            result.put("message", "변경할 비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+            return result;
+        }
+        
+        //새 비밀번호 암호화
+		String encodedPW = passwordEncoder.encrypt(dto.getNewPassword());
+		user.changePassword(encodedPW);
+		user.saveLastUpdatedAt();
+		
+        result.put("success", true);
+        result.put("message", "비밀번호 변경 성공");
+        return result;
+    }
 
 }

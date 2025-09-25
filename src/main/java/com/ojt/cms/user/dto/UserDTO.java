@@ -35,5 +35,7 @@ public class UserDTO {
     private Long deptId; //부서번호
     private AuthRole auth; //권한 memeber, admin, master, suspend
     private Boolean deleted; //0활성 1탈퇴
+    private LocalDateTime logInfo2; //이전 접속 일시 => 화면에 보여질 것
+    private LocalDateTime lastUpdatedAt; //이전 수정 일시 => 화면에 보여질 것
 
 }

@@ -78,15 +78,23 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private Boolean deleted; //0활성 1탈퇴
     
+    @Column(nullable = true)
+    private LocalDateTime logInfo2; //이전 접속 일시 => 화면에 보여질 것
+    
+    @Column(nullable = true)
+    private LocalDateTime lastUpdatedAt; //이전 수 일시 => 화면에 보여질 것
+    
     //ip와 로그인 시간 세팅
     public void setIPandLoinDate(String ipAddress ) {
     	this.ipInfo=ipAddress;
+    	this.logInfo2=this.logInfo;
     	this.logInfo=LocalDateTime.now();
     }
     
     //가입 거절 또는 승인
     public void setApprove(ApprovedStatus approve) {
         this.approved = approve;
+        this.lastUpdatedAt=LocalDateTime.now();
     }
     //권한변경
     public void setAuth(AuthRole auth) {
@@ -102,5 +110,14 @@ public class User extends BaseEntity {
 		this.phone=dto.getPhone1()+"-"+dto.getPhone2()+"-"+dto.getPhone3();
 		this.email=dto.getEmailId()+"@"+dto.getEmailDomain();
 		this.department= new Department(dto.getDeptId());
+		this.lastUpdatedAt=LocalDateTime.now();
+	}
+
+	public void withdraw() {
+		this.deleted=true;
+	}
+	
+	public void saveLastUpdatedAt () {
+		this.lastUpdatedAt=LocalDateTime.now();
 	}
 }

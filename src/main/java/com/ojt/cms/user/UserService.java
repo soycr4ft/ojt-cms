@@ -5,6 +5,7 @@ import java.util.Map;
 import com.ojt.cms.search.PageResponseDTO;
 import com.ojt.cms.user.dto.ApprovedUserResponseDTO;
 import com.ojt.cms.user.dto.ApprovedUserSearchDTO;
+import com.ojt.cms.user.dto.ModifyPasswordRequestDTO;
 import com.ojt.cms.user.dto.ModifyUserInfoDTO;
 import com.ojt.cms.user.dto.UserInfoResponseDTO;
 import com.ojt.cms.user.dto.UserJoinDTO;
@@ -28,4 +29,8 @@ public interface UserService {
 	//회원 기본정보 수정
 	void modifyUserInfo(ModifyUserInfoDTO dto) throws Exception;
 	UserLoginDTO getUserLoginDTO(Long userId) throws Exception;
+	//회원 탈퇴
+	Boolean userWithdraw(Long userId) throws Exception;
+	//비밀번호 변경
+	Map<String, Object> modifyPassword(ModifyPasswordRequestDTO dto)throws Exception;
 }

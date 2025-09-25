@@ -85,11 +85,13 @@ public class UserMapper {
 		
 		return UserInfoResponseDTO.builder()
 				.userId(user.getUserId())
-				.logInfo(user.getLogInfo())
+				.logInfo2(user.getLogInfo2())
 				.ipInfo(user.getIpInfo())
 				.name(user.getName())
 				.role(user.getAuth())
-				.updatedAt(detail !=null ? detail.getUpdatedAt() : user.getCreatedAt())
+				.lastUpdatedAt(detail !=null ? (user.getLastUpdatedAt().isAfter(detail.getUpdatedAt()) ?
+						user.getLastUpdatedAt() : detail.getUpdatedAt()
+						): (user.getLastUpdatedAt()!=null? user.getLastUpdatedAt(): user.getCreatedAt() ))
 			    .address1(detail != null ? detail.getAddress1() : null)
 			    .address2(detail != null ? detail.getAddress2() : null)
 				.deptId(user.getDepartment().getDeptId())
@@ -106,7 +108,7 @@ public class UserMapper {
 	public UserLoginDTO toUserLoginDTO(User user) {
 		return UserLoginDTO.builder()
 				.loginId(user.getLoginId())
-				.logInfo(user.getLogInfo())
+				.logInfo2(user.getLogInfo2())
 				.ipInfo(user.getIpInfo())
 				.name(user.getName())
 				.role(user.getAuth())

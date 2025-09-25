@@ -1,0 +1,106 @@
+<!-- 탭 내용 -->
+  <!-- 사원 정보 -->
+  <div th:fragment="infoTab">
+    <form class="row" id="userForm" onsubmit="modifyInfo(event)" enctype="multipart/form-data">
+      <!-- 사진 영역 -->
+      <div class="col-md-4 text-center">
+        <div class="card p-3">
+		<input type="hidden" name="userId" id="userId" th:value="${user.userId}" />
+		<input type="hidden" name="loginId" id="loginId" th:value="${user.loginId}" />
+
+		<input type="hidden" name="profile" th:value="${user.profile}" />
+		
+		 <img th:unless="${user != null and user.profile != null}" th:src="@{/images/default_profile.png}"class="img-fluid mb-3" alt="프로필 사진"
+		  id="preview">
+          <button type="button" th:unless="${user != null and user.profile != null}"  class="btn btn-primary btn-sm" 
+		 onclick="document.getElementById('profileFile').click();">사진등록</button>
+          <input th:unless="${user != null and user.profile != null}" type="file" name="profileFile" id="profileFile" accept="image/*" style="display: none"
+				onchange="readURL(this);">
+          
+			<img th:if="${user != null and user.profile != null}" th:src="@{'/uploads/' + ${user.profile}}" class="img-fluid mb-3" alt="프로필 사진"  id="preview">
+          <button type="button" th:if="${user != null and user.profile != null}"  class="btn btn-primary btn-sm" 
+		 onclick="document.getElementById('profileFile').click();">사진수정</button>
+		 <button type="button" th:if="${user != null and user.profile != null}"  class="btn btn-primary btn-sm" 
+		 			 onclick="removeProfile()">사진삭제</button>
+					 
+          <input th:if="${user != null and user.profile != null}" type="file" name="profileFile" id="profileFile" accept="image/*" style="display: none"
+				onchange="readURL(this);">				
+       </div>
+      </div>
+
+      <!-- 정보 입력 영역 -->
+      <div class="col-md-8">
+          <div class="mb-3 row">
+            <label class="col-sm-2 col-form-label">이름<span style="color:red;">*</span></label>
+            <div class="col-sm-10">
+              <input type="text" name="name" th:value="${user.name}" class="form-control" required>
+            </div>
+          </div>
+
+          <div class="mb-3 row">
+            <label class="col-sm-2 col-form-label">부서<span style="color:red;">*</span></label>
+            <div class="col-sm-10">
+              <select name="deptId" class="form-select">
+                <option th:each="dept : ${departments}"
+                        th:value="${dept.deptId}"
+                        th:text="${dept.deptName}"
+                        th:selected="${dept.deptId == user.deptId}">
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-3 row">
+            <label class="col-sm-2 col-form-label">휴대폰 번호<span style="color:red;">*</span></label>
+            <div class="col-sm-10 d-flex gap-2">
+              <input type="text" name="phone1" th:value="${user.phone1}" class="form-control" style="max-width:80px" required>
+              <input type="text" name="phone2" th:value="${user.phone2}" class="form-control" style="max-width:100px" required>
+              <input type="text" name="phone3" th:value="${user.phone3}" class="form-control" style="max-width:100px" required>
+            </div>
+          </div>
+
+          <div class="mb-3 row">
+            <label class="col-sm-2 col-form-label">이메일<span style="color:red;">*</span></label>
+            <div class="col-sm-10 d-flex gap-2">
+              <input type="text" name="emailId" th:value="${user.emailId}" class="form-control" style="max-width:150px"  required>
+              <span class="align-self-center">@</span>
+			
+			<select name="emailDomain" class="form-select" style="min-width:180px"
+                      th:value="${user.emailDomain}">
+                <option value="">- 이메일 선택 -</option>
+                <option value="naver.com" th:selected="${user.emailDomain == 'naver.com'}">naver.com</option>
+                <option value="gmail.com" th:selected="${user.emailDomain == 'gmail.com'}">gmail.com</option>
+                <option value="naedamcnc.com" th:selected="${user.emailDomain == 'naedamcnc.com'}">naedamcnc.com</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-3 row">
+            <label class="col-sm-2 col-form-label">주소
+			<span style="color:red;">*</span>
+		  </label>
+            <div class="col-sm-10 d-flex gap-2">
+              <input type="text" name="address1" id="address1"  th:value="${user.address1}" class="form-control" required>
+              <button type="button" class="btn btn-secondary" onclick="daumPostcode()">주소검색</button>
+            </div>
+          </div>
+
+          <div class="mb-3 row">
+            <div class="offset-sm-2 col-sm-10">
+              <input type="text" name="address2" id="address2" th:value="${user.address2}" class="form-control" required>
+            </div>
+          </div>
+
+          <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary px-5">수정하기</button>
+			<button type="button" th:data-user-id="${user.userId}" id="withdraw" class="btn btn-secondary px-5">탈퇴하기</button>
+          </div>
+      </div>
+    </form>
+
+    <div class="mt-4 small text-muted">
+      <p>최근 수정일 : <span th:text="${#temporals.format(user.lastUpdatedAt, 'yyyy.MM.dd HH:mm:ss')}"></span></p>
+      <p>최근 접속일 : <span th:text="${#temporals.format(user.logInfo2, 'yyyy.MM.dd HH:mm:ss')}"></span></p>
+      <p>최근 접속IP : <span th:text="${user.ipInfo}"></span></p>
+    </div>
+  </div>

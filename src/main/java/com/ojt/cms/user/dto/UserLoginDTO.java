@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserLoginDTO { //세션 저장용
 	private String loginId;
-	private LocalDateTime logInfo;
+	private LocalDateTime logInfo2;
 	private String ipInfo;
 	private String name;
 	private AuthRole role;

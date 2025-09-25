@@ -1,0 +1,32 @@
+<div th:fragment="careerTab">
+  <ul class="nav nav-tabs mb-3">
+    <li class="nav-item">
+      <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#edu">학력사항</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#military">병역사항</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#training">교육사항</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#license">자격증사항</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#skill">보유기술</button>
+    </li>
+  </ul>
+
+  <div class="tab-content border p-4">
+    <div class="tab-pane fade show active" id="edu"
+         th:replace="user/fragments/career-edu :: eduTab"></div>
+    <div class="tab-pane fade" id="military"
+         th:replace="user/fragments/career-military :: militaryTab"></div>
+    <div class="tab-pane fade" id="training"
+         th:replace="user/fragments/career-training :: trainingTab"></div>
+    <div class="tab-pane fade" id="license"
+         th:replace="user/fragments/career-license :: licenseTab"></div>
+    <div class="tab-pane fade" id="skill"
+         th:replace="user/fragments/career-skill :: skillTab"></div>
+  </div>
+</div>
