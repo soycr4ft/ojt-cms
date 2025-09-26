@@ -16,7 +16,8 @@
     <div class="row mb-3">
       <div class="col-md-4">
         <label class="form-label">학교명 <span class="text-danger">*</span></label>
-        <select class="form-select" >
+        <select id="citySelect" class="form-select" >
+			<option value="all">전체</option>
 			<option value="B10">서울특별시</option>
 			<option value="C10">부산광역시</option>
 			<option value="E10">인천광역시</option>
@@ -37,8 +38,10 @@
       </div>
       <div class="col-md-6">
         <label class="form-label">&nbsp;</label>
-        <input type="text" class="form-control" placeholder="고등학교명 입력" required />
-      </div>
+		<input type="text" id="schoolInput" class="form-control"
+		       placeholder="고등학교명 입력" list="highSchoolList" required />
+   		<datalist id="highSchoolList"></datalist>
+	</div>
       <div class="col-md-2 d-flex align-items-end">
         <div class="form-check">
           <input class="form-check-input" type="checkbox"  id="gedCheck">
@@ -50,15 +53,15 @@
     <div class="row mb-3">
       <div class="col-md-5">
         <label class="form-label">입학일</label>
-        <input type="month" class="form-control"  />
+		<input type="month" id="highschoolStart" class="form-control" />
       </div>
       <div class="col-md-5">
         <label class="form-label">졸업일 <span class="text-danger">*</span></label>
-        <input type="month" class="form-control"  required />
+		<input type="month" id="highschoolEnd" class="form-control" required />
       </div>
       <div class="col-md-2">
         <label class="form-label">상태</label>
-        <select class="form-select" >
+		<select id="highschoolStatus" class="form-select">
           <option value="졸업">졸업</option>
           <option value="졸업예정">졸업예정</option>
           <option value="재학">재학</option>
@@ -100,11 +103,11 @@
     <div class="row mb-3">
       <div class="col-md-5">
         <label class="form-label">입학일</label>
-        <input type="month" class="form-control" />
+		<input type="month" name="startDate" class="form-control" />
       </div>
       <div class="col-md-5">
         <label class="form-label">졸업일</label>
-        <input type="month" class="form-control"  />
+		<input type="month" name="endDate" class="form-control" />
       </div>
       <div class="col-md-2">
         <label class="form-label">상태</label>
@@ -129,7 +132,9 @@
   <div id="university-container"></div>
 
   <div class="d-grid">
-  	<button type="button" id="btnAddUniv" class="btn btn-secondary">+ 대학·대학원 정보 추가</button>
+	<button type="button" id="btnAddUniv" class="btn btn-secondary" disabled>
+	  + 대학·대학원 정보 추가
+	</button>
   </div>
 
   <!-- 저장 버튼 -->
