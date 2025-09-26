@@ -26,7 +26,7 @@ public abstract class BaseEntity {
 	private LocalDateTime createdAt;
 	
 	@LastModifiedDate //update시 자동 갱신
-	@Column(nullable=false)
+	@Column(nullable=true)
 	private LocalDateTime updatedAt;
 	
 	

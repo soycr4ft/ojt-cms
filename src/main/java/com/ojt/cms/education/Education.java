@@ -46,7 +46,7 @@ public class Education extends BaseEntity {
     @Column(nullable = false)
     private LocalDate entDate;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalDate graduDate;
 
     @Enumerated(EnumType.STRING)

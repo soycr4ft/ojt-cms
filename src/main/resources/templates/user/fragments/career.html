@@ -18,15 +18,21 @@
   </ul>
 
   <div class="tab-content border p-4">
-    <div class="tab-pane fade show active" id="edu"
-         th:replace="user/fragments/career-edu :: eduTab"></div>
-    <div class="tab-pane fade" id="military"
-         th:replace="user/fragments/career-military :: militaryTab"></div>
-    <div class="tab-pane fade" id="training"
-         th:replace="user/fragments/career-training :: trainingTab"></div>
-    <div class="tab-pane fade" id="license"
-         th:replace="user/fragments/career-license :: licenseTab"></div>
-    <div class="tab-pane fade" id="skill"
-         th:replace="user/fragments/career-skill :: skillTab"></div>
+    <div class="tab-pane fade show active" id="edu">
+		<div th:replace="user/fragments/career-edu :: eduTab"></div>
+	</div>
+         
+    <div class="tab-pane fade" id="military">
+		<div th:replace="user/fragments/career-military :: militaryTab"></div>
+	</div>
+    <div class="tab-pane fade" id="training">
+		<div th:replace="user/fragments/career-training :: trainingTab"></div>
+	</div>
+    <div class="tab-pane fade" id="license">
+		<div th:replace="user/fragments/career-license :: licenseTab"></div>
+	</div>
+    <div class="tab-pane fade" id="skill">
+		<div th:replace="user/fragments/career-skill :: skillTab"></div>
+	</div>
   </div>
 </div>
